@@ -1,80 +1,100 @@
 let loadStatus = false;
 
+function applyStyles(elem, styles) {
+  for (const [key, value] of Object.entries(styles)) {
+    elem.style[key] = value;
+  }
+}
+
+function pickRandomUser(selectedUser, users, animationDuration = 2000) {
+  let animationInterval;
+  let animationStartTime = Date.now();
+
+  function updateAnimation() {
+    const randomIndex = Math.floor(Math.random() * users.length);
+    selectedUser.textContent = `Sorteando: ${users[randomIndex]}`;
+
+    if (Date.now() - animationStartTime >= animationDuration) {
+      clearInterval(animationInterval);
+      const finalIndex = Math.floor(Math.random() * users.length);
+      selectedUser.textContent = `Sorteado: ${users[finalIndex]}`;
+
+      applyStyles(selectedUser, {
+        color: '#f9ff00',
+        border: '2px solid blue',
+        padding: '10px',
+        borderRadius: '5px',
+      });
+    }
+  }
+
+  animationInterval = setInterval(updateAnimation, 100);
+}
+
 function showNameList(users) {
   const container = document.createElement("div");
-  container.style.position = "fixed";
-  container.style.top = "0";
-  container.style.left = "0";
-  container.style.width = "100%";
-  container.style.height = "100%";
-  container.style.backgroundColor = "rgba(0, 0, 0, 0.9)";
-  container.style.padding = "20px";
-  container.style.overflowY = "scroll";
-  container.style.zIndex = "9999";
-  container.style.display = "flex";
-  container.style.flexDirection = "column";
-  container.style.alignItems = "center";
+  applyStyles(container, {
+    position: "fixed",
+    top: "0",
+    left: "0",
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.9)",
+    padding: "20px",
+    overflowY: "scroll",
+    zIndex: "9999",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  });
 
   const title = document.createElement("h2");
   title.textContent = `Lista de ${users.length} Usuários`;
   container.appendChild(title);
 
   const selectedUser = document.createElement("div");
-  selectedUser.style.fontSize = "24px";
-  selectedUser.style.fontWeight = "bold";
-  selectedUser.style.marginBottom = "20px";
+  applyStyles(selectedUser, {
+    fontSize: "24px",
+    fontWeight: "bold",
+    marginBottom: "20px",
+  });
+
   container.appendChild(selectedUser);
-
-  function pickRandomUser() {
-    let animationInterval;
-    let animationDuration = 2000; // Duração da animação em milissegundos
-    let animationStartTime = Date.now();
-
-    // Função para atualizar o nome exibido durante a animação
-    function updateAnimation() {
-      const randomIndex = Math.floor(Math.random() * users.length);
-      selectedUser.textContent = `Sorteando: ${users[randomIndex]}`;
-
-      if (Date.now() - animationStartTime >= animationDuration) {
-        clearInterval(animationInterval);
-        const finalIndex = Math.floor(Math.random() * users.length);
-        selectedUser.textContent = `Sorteado: ${users[finalIndex]}`;
-        selectedUser.style.color = "#f9ff00";
-        selectedUser.style.border = "2px solid blue";
-        selectedUser.style.padding = "10px";
-        selectedUser.style.borderRadius = "5px";
-      }
-    }
-
-    // Inicia a animação
-    animationInterval = setInterval(updateAnimation, 100);
-  }
 
   const pickButton = document.createElement("button");
   pickButton.textContent = "Sortear Usuário";
-  pickButton.style.marginBottom = "20px";
+  applyStyles(pickButton, {
+    marginBottom: "20px",
+  });
+
   pickButton.onclick = () => {
-    pickRandomUser();
+    pickRandomUser(selectedUser, users);
   };
+
   container.appendChild(pickButton);
 
   const list = document.createElement("ul");
-  list.style.listStyle = "none";
-  list.style.padding = "0";
-  list.style.maxHeight = "60vh";
-  list.style.overflowY = "auto";
-  list.style.width = "100%";
-  list.style.textAlign = "center";
-  list.style.backgroundColor = "rgb(94 66 202 / 50%)";
-  list.style.fontSize = "x-large";
+  applyStyles(list, {
+    listStyle: "none",
+    padding: "0",
+    maxHeight: "60vh",
+    overflowY: "auto",
+    width: "100%",
+    textAlign: "center",
+    backgroundColor: "rgb(94 66 202 / 50%)",
+    fontSize: "x-large",
+  });
 
   for (const user of users) {
     const listItem = document.createElement("li");
     listItem.textContent = user;
-    listItem.style.padding = "10px";
-    listItem.style.borderBottom = "1px solid #ccc";
+    applyStyles(listItem, {
+      padding: "10px",
+      borderBottom: "1px solid #ccc",
+    });
     list.appendChild(listItem);
   }
+
   container.appendChild(list);
 
   const closeButton = document.createElement("button");
@@ -83,8 +103,8 @@ function showNameList(users) {
   closeButton.onclick = () => {
     container.remove();
   };
-  container.appendChild(closeButton);
 
+  container.appendChild(closeButton);
   document.body.appendChild(container);
 }
 
